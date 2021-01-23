@@ -7,22 +7,40 @@ int CALLBACK WinMain(
 	LPSTR     lpCmdLine,
 	int		  nCmdShow) 
 {
-	Window wnd(800, 300, "Donkey Fart Box");
-	
-	//message pump
-	MSG msg;
-	BOOL gResult;
-	while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
+	try
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+
+
+		Window wnd(640, 480, "Donkey Fart Box");
+		//message pump
+		MSG msg;
+		BOOL gResult;
+		while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		if (gResult == -1)
+		{
+			return -1;
+		}
+		else//gResult == 0
+		{
+			return msg.wParam;
+		}
 	}
-	if (gResult == -1)
+	catch (const ChiliException& e)
 	{
-		return -1;
+		MessageBox(nullptr,e.what(),e.GetType(),MB_OK|MB_ICONEXCLAMATION);
 	}
-	else//gResult == 0
+	catch (const std::exception& e)
 	{
-		return msg.wParam;
+		MessageBox(nullptr,e.what(),"Standard Exceptions",MB_OK| MB_ICONEXCLAMATION);
 	}
+	catch (...)
+	{
+		MessageBox(nullptr,"No details available","Unknown Exception",MB_OK|MB_ICONEXCLAMATION);
+	}
+	return -1;
+
 }
