@@ -1,6 +1,7 @@
 #include "Window.h"
 #include <string>
 #include <sstream>
+#include "resource.h"
 Window::WindowClass Window::WindowClass::wndClass;
 
 Window::WindowClass::WindowClass() noexcept
@@ -15,11 +16,11 @@ Window::WindowClass::WindowClass() noexcept
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = GetInstance();
-	wc.hIcon = nullptr;
+	wc.hIcon = static_cast<HICON>(LoadImage(hInst,MAKEINTRESOURCE(IDI_ICON1),IMAGE_ICON,32,32,0));
 	wc.hCursor = nullptr;
 	wc.lpszClassName = GetName();
 	wc.lpszMenuName = nullptr;
-	wc.hIconSm = nullptr;
+	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));;
 	RegisterClassEx(&wc);
 }
 
@@ -46,7 +47,10 @@ Window::Window(int width, int height, const char* name) noexcept
 	wr.right = width + wr.left;
 	wr.top = 100;
 	wr.bottom = height + wr.top;
-	AdjustWindowRect(&wr, WS_CAPTION | WS_MAXIMIZEBOX | WS_SYSMENU, FALSE);
+	if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MAXIMIZEBOX | WS_SYSMENU, FALSE))) 
+	{
+		throw CHWND_LAST_EXCEPT();
+	};
 	hWnd = CreateWindow(
 		WindowClass::GetName(),
 		name,
@@ -60,6 +64,10 @@ Window::Window(int width, int height, const char* name) noexcept
 		WindowClass::GetInstance(),
 		this
 	);
+	if (hWnd == nullptr)
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 	//Show window
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 }
