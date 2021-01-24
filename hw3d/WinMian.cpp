@@ -21,7 +21,11 @@ int CALLBACK WinMain(
 			while (!wnd.mouse.IsEmpty())
 			{
 				const auto e = wnd.mouse.Read();
-				if (e.GetType() == Mouse::Event::Type::Move)
+				if (e.GetType() == Mouse::Event::Type::Leave) 
+				{
+					wnd.SetTitle("Gone!");
+				}
+				else if (e.GetType() == Mouse::Event::Type::Move)
 				{
 					std::ostringstream oss;
 					oss << "Mouse Position:( " << e.GetPosX() << "," << e.GetPosY() << ")";

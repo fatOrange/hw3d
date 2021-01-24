@@ -140,7 +140,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
 			mouse.OnMouseMove(pt.x, pt.y);
-			if (!mouse.IsInWindow())
+			if (!mouse.IsInWindow())//if last mouse in window
 			{
 				SetCapture(hWnd);
 				mouse.OnMouseEnter();
@@ -153,7 +153,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 				mouse.OnMouseMove(pt.x, pt.y);
 			}
 			else
-			{
+			{	
 				ReleaseCapture();
 				mouse.OnMouseLeave();
 			}
