@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "WindowsMessageMap.h"
-
+#include <sstream>
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -9,8 +9,6 @@ int CALLBACK WinMain(
 {
 	try
 	{
-
-
 		Window wnd(640, 480, "Donkey Fart Box");
 		//message pump
 		MSG msg;
@@ -19,6 +17,17 @@ int CALLBACK WinMain(
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+			
+			while (!wnd.mouse.IsEmpty())
+			{
+				const auto e = wnd.mouse.Read();
+				if (e.GetType() == Mouse::Event::Type::Move)
+				{
+					std::ostringstream oss;
+					oss << "Mouse Position:( " << e.GetPosX() << "," << e.GetPosY() << ")";
+					wnd.SetTitle(oss.str());
+				}
+			}
 		}
 		if (gResult == -1)
 		{

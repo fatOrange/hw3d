@@ -41,16 +41,19 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 // Window Stuff
 Window::Window(int width, int height, const char* name) noexcept
+	:
+	height(height),
+	width(width)
 {
 	RECT wr;
 	wr.left = 100;
 	wr.right = width + wr.left;
 	wr.top = 100;
 	wr.bottom = height + wr.top;
-	if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MAXIMIZEBOX | WS_SYSMENU, FALSE))) 
+	if (AdjustWindowRect(&wr, WS_CAPTION | WS_MAXIMIZEBOX | WS_SYSMENU, FALSE)==0) 
 	{
 		throw CHWND_LAST_EXCEPT();
-	};
+	}
 	hWnd = CreateWindow(
 		WindowClass::GetName(),
 		name,
@@ -74,6 +77,14 @@ Window::Window(int width, int height, const char* name) noexcept
 Window::~Window()
 {
 	DestroyWindow(hWnd);
+}
+
+void Window::SetTitle(const std::string title) 
+{
+	if (SetWindowText(hWnd, title.c_str())==0 ) 
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -103,26 +114,74 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
-	case WM_LBUTTONDOWN:
+	case WM_KILLFOCUS:
+		kbd.ClearState();
+		break;
+		/*********** KEYBOARD MESSAGES ************/
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled())
 		{
-			POINTS pt = MAKEPOINTS(lParam);
-			std::ostringstream oss;
-			oss << "(" << pt.x << "." << pt.y << ")";
-			SetWindowText(hWnd, oss.str().c_str());
+			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
 		}
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
-		{
-		static std::string title;
-		title.push_back((char)wParam);
-		SetWindowText(hWnd, title.c_str());
-		}
+		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
+		/*********** KEYBOARD MESSAGES ************/
+		/*********** MOUSE MESSAGES ************/
+	case WM_MOUSEMOVE:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnMouseMove(pt.x, pt.y);
+		break;
+	}
+	case WM_LBUTTONDOWN:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftPressed(pt.x, pt.y);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightPressed(pt.x, pt.y);
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftReleased(pt.x, pt.y);
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightReleased(pt.x, pt.y);
+		break;
+	}
+	case WM_MOUSEWHEEL:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+		{
+			mouse.OnWheelUp(pt.x, pt.y);
+		}
+		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
+		{
+			mouse.OnWheelDown(pt.x, pt.y);
+		}
+
+	}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-Window::Exception::Exception(int line, const char* file, HRESULT hr) noexcept
+Window::Exception::Exception(int line, const char* file, HRESULT hr)noexcept
 	:
 	ChiliException(line, file),
 	hr(hr)
