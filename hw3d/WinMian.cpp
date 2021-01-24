@@ -17,19 +17,30 @@ int CALLBACK WinMain(
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-			
+
+			// test code
+			static int i = 0;
 			while (!wnd.mouse.IsEmpty())
 			{
 				const auto e = wnd.mouse.Read();
-				if (e.GetType() == Mouse::Event::Type::Leave) 
+				switch (e.GetType())
 				{
-					wnd.SetTitle("Gone!");
-				}
-				else if (e.GetType() == Mouse::Event::Type::Move)
-				{
-					std::ostringstream oss;
-					oss << "Mouse Position:( " << e.GetPosX() << "," << e.GetPosY() << ")";
-					wnd.SetTitle(oss.str());
+				case Mouse::Event::Type::WheelUp:
+					i++;
+					{
+						std::ostringstream oss;
+						oss << "Up: " << i;
+						wnd.SetTitle(oss.str());
+					}
+					break;
+				case Mouse::Event::Type::WheelDown:
+					i--;
+					{
+						std::ostringstream oss;
+						oss << "Down: " << i;
+						wnd.SetTitle(oss.str());
+					}
+					break;
 				}
 			}
 		}
