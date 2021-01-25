@@ -151,6 +151,8 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="ChiliException.cpp" />
     <ClCompile Include="ChiliTimer.cpp" />
+    <ClCompile Include="dxerr.cpp" />
+    <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -163,6 +165,9 @@
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliTimer.h" />
     <ClInclude Include="ChiliWin.h" />
+    <ClInclude Include="dxerr.h" />
+    <ClInclude Include="DXGetErrorDescription.inl" />
+    <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Mouse.h" />
@@ -176,6 +181,10 @@
   <ItemGroup>
     <Image Include="happy_emoji_emo_emoticon_icon_178898.ico" />
     <Image Include="导航.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DXGetErrorString.inl" />
+    <None Include="DXTrace.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
