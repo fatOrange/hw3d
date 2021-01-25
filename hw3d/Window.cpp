@@ -71,8 +71,10 @@ Window::Window(int width, int height, const char* name) noexcept
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
-	//Show window
+	// Show window
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	// create graphics object
+	pGfx = std::make_unique<Graphics>(hWnd);
 }
 Window::~Window()
 {
@@ -263,4 +265,10 @@ std::optional<int> Window::ProcessMessages()
 		DispatchMessage(&msg);
 	}
 	return {};
+}
+
+Graphics& Window::Gfx()
+{
+	// TODO: insert return statement here
+	return *pGfx;
 }
