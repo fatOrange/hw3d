@@ -1,6 +1,5 @@
 #include "App.h"
-#include <sstream>
-#include <iomanip>
+
 App::App()
 	:
 	wnd(800, 600, "The Donkey Fart Box")
@@ -8,35 +7,26 @@ App::App()
 
 int App::Go()
 {
-	MSG msg;
-	BOOL gResult;
 	while (true)
 	{
+		// process all messages pending, but to not block for new messages
 		if (const auto ecode = Window::ProcessMessages())
 		{
+			// if return optional has value, means we're quitting so return exit code
 			return *ecode;
 		}
 		DoFrame();
 	}
-
-	// check if GetMessage call itself borked
-	if (gResult == -1)
-	{
-		throw CHWND_LAST_EXCEPT();
-	}
-
-	// wParam here is the value passed to PostQuitMessage
-	return msg.wParam;
 }
 
 void App::DoFrame()
 {
 	const float c = sin(timer.Peek()) / 2.0f + 0.5f;
-	wnd.Gfx().ClearBuffer(c, c, 1.0);
+	wnd.Gfx().ClearBuffer(c, c, 1.0f);
 	wnd.Gfx().DrawTestTriangle(
 		timer.Peek(),
-		wnd.mouse.GetPosX() / 400.f - 1.0f,
-		-wnd.mouse.GetPosY() /300.f +1.0f
-		);
+		wnd.mouse.GetPosX()/400.0f - 1 ,
+		- wnd.mouse.GetPosY()/300.0f + 1
+	);
 	wnd.Gfx().EndFrame();
 }
