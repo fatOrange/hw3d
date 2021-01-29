@@ -171,6 +171,7 @@
     <ClCompile Include="WinMian.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DrawableBase.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
     <ClInclude Include="Bindable.h" />

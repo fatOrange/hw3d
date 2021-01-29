@@ -69,12 +69,6 @@
     <ClCompile Include="DxgiInfoManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -98,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="VertexShader.cpp">
       <Filter>源文件\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>源文件\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>源文件\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Box.h">
       <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawableBase.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
