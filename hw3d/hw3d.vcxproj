@@ -171,8 +171,15 @@
     <ClCompile Include="WinMian.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChiliMath.h" />
+    <ClInclude Include="Cone.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="DrawableBase.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
+    <ClInclude Include="IndexedTriangleList.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Prism.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableBase.h" />
