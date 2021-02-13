@@ -19,7 +19,7 @@ public:
 		std::vector<V> vertices;
 		for (int iLong = 0; iLong < longDiv; iLong++)
 		{
-			vertices.emplace_back();
+			vertices.emplace_back();//构造一个空
 			auto v = dx::XMVector3Transform(
 				base,
 				dx::XMMatrixRotationZ(longitudeAngle * iLong)

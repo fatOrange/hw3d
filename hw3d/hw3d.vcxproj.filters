@@ -99,6 +99,15 @@
     <ClCompile Include="Box.cpp">
       <Filter>源文件\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="Melon.cpp">
+      <Filter>源文件\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>源文件\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle_cube.cpp">
+      <Filter>源文件\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -188,16 +197,7 @@
     <ClInclude Include="ChiliMath.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Cone.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="IndexedTriangleList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Plane.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Prism.h">
@@ -205,6 +205,24 @@
     </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Melon.h">
+      <Filter>头文件\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle_cube.h">
+      <Filter>头文件\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -229,10 +247,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="ColorBlendPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="ColorBlendVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorIndexVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

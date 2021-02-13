@@ -131,8 +131,8 @@ void Graphics::EndFrame()
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 {
 	const float color[] = { red,green,blue,1.0f };
-	pContext->ClearRenderTargetView(pTarget.Get(), color);
-	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	pContext->ClearRenderTargetView(pTarget.Get(), color);//清理view 不清理会有残影
+	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);//Depth and StencilView
 }
 
 void Graphics::DrawIndexed(UINT count) noexcept(!IS_DEBUG)
