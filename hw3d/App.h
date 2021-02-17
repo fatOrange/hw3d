@@ -13,6 +13,7 @@ private:
 	void DoFrame();
 
 private:
+	bool show_demo_window = true;
 	ImguiManager imgui;
 	Window wnd;
 	ChiliTimer timer;
