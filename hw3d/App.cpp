@@ -74,7 +74,8 @@ App::App()
 	std::generate_n(std::back_inserter(drawables), nDrawables, f);
 
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));//Builds a left-handed perspective projection matrix. 镜头
+	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));//Builds a left-handed perspective projection matrix. 镜头
+	//wnd.Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));// 左右，上下，深浅
 }
 
 
@@ -98,6 +99,8 @@ App::~App()
 
 void App::DoFrame()
 {
+	wnd.Gfx().SetCamera(cam.GetMatrix());
+
 	const auto dt = timer.Mark() * speed_factor;
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
@@ -112,13 +115,17 @@ void App::DoFrame()
 	// imgui window to control simulation speed
 	if (ImGui::Begin("Simulation Speed"))
 	{
+		ImGui::SliderFloat("temp_value_a", &temp_value_a, -40.0f, 40.0f);
+		ImGui::SliderFloat("temp_value_b", &temp_value_b, -40.0f, 40.0f);
+		ImGui::SliderFloat("temp_value_c", &temp_value_c, -40.0f, 40.0f);
 		ImGui::SliderFloat("Speed Factor", &speed_factor, -4.0f, 10.0f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::InputText("Butts", buffer, sizeof(buffer));
 		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING");
 	}
 	ImGui::End();
-
+	// imgui window to control camera
+	cam.SpawnControlWindow();
 
 	// present
 	wnd.Gfx().EndFrame();
