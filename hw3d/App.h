@@ -3,6 +3,8 @@
 #include "ChiliTimer.h"
 #include "ImguiManager.h"
 #include "Camera.h"
+#include "PointLight.h"
+
 class App
 {
 public:
@@ -23,5 +25,6 @@ private:
 	ChiliTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
 	Camera cam;
+	PointLight light;
 	static constexpr size_t nDrawables = 180;
 };

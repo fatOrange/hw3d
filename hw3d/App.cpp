@@ -1,16 +1,11 @@
 #include "App.h"
 #include "Box.h"
-#include "Melon.h"
-#include "Pyramid.h"
-#include "triangle_cube.h"
-#include "SkinBox.h"
 #include <memory>
 #include <algorithm>
 #include <iterator>
 #include "ChiliMath.h"
 #include "Surface.h"
 #include "GDIPlusManager.h"
-#include "Sheet.h"
 #include "imgui/imgui.h"
 
 namespace dx = DirectX;
@@ -19,7 +14,8 @@ GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd(800, 600, "The Donkey Fart Box")
+	wnd(800, 600, "The Donkey Fart Box"),
+	light(wnd.Gfx())
 {
 	class Factory
 	{
@@ -28,33 +24,12 @@ App::App()
 			:
 			gfx(gfx)
 		{}
-		std::unique_ptr<Drawable> operator()() {
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<TrangleCube>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 1:
-				return std::make_unique<SkinBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
-			case 2:
-				return std::make_unique<Melon>(
-					gfx, rng, adist, ddist,
-					odist, rdist, longdist, latdist
-					);
-			case 3:
-				return std::make_unique<Sheet>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			default:
-				assert(false && "bad drawable type in factory");
-				return {};
-			}
+		std::unique_ptr<Drawable> operator()()
+		{
+			return std::make_unique<Box>(
+				gfx, rng, adist, ddist,
+				odist, rdist, bdist
+				);
 		}
 	private:
 		Graphics& gfx;
@@ -64,18 +39,12 @@ App::App()
 		std::uniform_real_distribution<float> odist{ 0.0f,PI * 0.08f };
 		std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
 		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-		std::uniform_int_distribution<int> latdist{ 5,20 };
-		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,3 }; //选择类型
 	};
 
-	Factory f(wnd.Gfx());
 	drawables.reserve(nDrawables);
-	std::generate_n(std::back_inserter(drawables), nDrawables, f);
+	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
 
-
-	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));//Builds a left-handed perspective projection matrix. 镜头
-	//wnd.Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));// 左右，上下，深浅
+	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
 
 
@@ -99,33 +68,29 @@ App::~App()
 
 void App::DoFrame()
 {
-	wnd.Gfx().SetCamera(cam.GetMatrix());
-
 	const auto dt = timer.Mark() * speed_factor;
-
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetCamera(cam.GetMatrix());
+	light.Bind(wnd.Gfx());
+
 	for (auto& d : drawables)
 	{
 		d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		d->Draw(wnd.Gfx());
 	}
-
-	static char buffer[1024];
+	light.Draw(wnd.Gfx());
 
 	// imgui window to control simulation speed
 	if (ImGui::Begin("Simulation Speed"))
 	{
-		ImGui::SliderFloat("temp_value_a", &temp_value_a, -40.0f, 40.0f);
-		ImGui::SliderFloat("temp_value_b", &temp_value_b, -40.0f, 40.0f);
-		ImGui::SliderFloat("temp_value_c", &temp_value_c, -40.0f, 40.0f);
-		ImGui::SliderFloat("Speed Factor", &speed_factor, -4.0f, 10.0f);
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::InputText("Butts", buffer, sizeof(buffer));
-		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING");
+		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING (hold spacebar to pause)");
 	}
 	ImGui::End();
-	// imgui window to control camera
+	// imgui windows to control camera and light
 	cam.SpawnControlWindow();
+	light.SpawnControlWindow();
 
 	// present
 	wnd.Gfx().EndFrame();

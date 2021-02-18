@@ -7,6 +7,7 @@ VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
 	INFOMAN(gfx);
 
 	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &pBytecodeBlob));
+	auto bufferSize = pBytecodeBlob->GetBufferSize();
 	GFX_THROW_INFO(GetDevice(gfx)->CreateVertexShader(
 		pBytecodeBlob->GetBufferPointer(),	//*pShaderBytecode,A pointer to the compiled shader
 		pBytecodeBlob->GetBufferSize(),		//BytecodeLength,Size of the compiled vertex shader.
