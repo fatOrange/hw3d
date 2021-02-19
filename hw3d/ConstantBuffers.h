@@ -12,12 +12,17 @@ public:
 		INFOMAN(gfx);
 
 		D3D11_MAPPED_SUBRESOURCE msr;
+		//  Disable GPU access to the vertex buffer data.
 		GFX_THROW_INFO(GetContext(gfx)->Map(
-			pConstantBuffer.Get(), 0u,
-			D3D11_MAP_WRITE_DISCARD, 0u,
+			pConstantBuffer.Get(),
+			0u,
+			D3D11_MAP_WRITE_DISCARD, 
+			0u,
 			&msr
 		));
+		//  Update the vertex buffer here.
 		memcpy(msr.pData, &consts, sizeof(consts));
+		//  Reenable GPU access to the vertex buffer data.
 		GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
 	ConstantBuffer(Graphics& gfx, const C& consts)
@@ -26,7 +31,7 @@ public:
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;//This usage flag causes the runtime to optimize for frequent map operations. D3D11_USAGE_DYNAMIC is only useful when the buffer is mapped frequently; if data is to remain constant, place that data in a static vertex or index buffer.
 		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = sizeof(consts);

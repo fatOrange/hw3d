@@ -16,9 +16,6 @@ private:
 	void DoFrame();
 
 private:
-	float temp_value_a = 0.0f;
-	float temp_value_b = 0.0f;
-	float temp_value_c = 20.0f;
 	float speed_factor = 1.0f;
 	ImguiManager imgui;
 	Window wnd;
