@@ -9,7 +9,9 @@ Box::Box(Graphics& gfx,
 	std::uniform_real_distribution<float>& ddist,
 	std::uniform_real_distribution<float>& odist,
 	std::uniform_real_distribution<float>& rdist,
-	std::uniform_real_distribution<float>& bdist)
+	std::uniform_real_distribution<float>& bdist,
+	DirectX::XMFLOAT3 material
+	)
 	:
 	r(rdist(rng)),
 	droll(ddist(rng)),
@@ -60,6 +62,17 @@ Box::Box(Graphics& gfx,
 	}
 
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+	struct PSMaterialConstant
+	{
+		alignas(16) dx::XMFLOAT3 color;
+		float specularIntensity = 0.6f;
+		float specularPower = 30.0f;
+		float padding[2];
+	} colorConst;
+	colorConst.color = material;
+	AddBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
+
+
 	// model deformation transform (per instance, not stored as bind)
 	dx::XMStoreFloat3x3(
 		&mt,

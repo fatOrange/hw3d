@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Bindable.h"
 #include "GraphicsThrowMacros.h"
 
@@ -12,26 +11,23 @@ public:
 		INFOMAN(gfx);
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		//  Disable GPU access to the vertex buffer data.
 		GFX_THROW_INFO(GetContext(gfx)->Map(
-			pConstantBuffer.Get(),
-			0u,
-			D3D11_MAP_WRITE_DISCARD, 
-			0u,
+			pConstantBuffer.Get(), 0u,
+			D3D11_MAP_WRITE_DISCARD, 0u,
 			&msr
 		));
-		//  Update the vertex buffer here.
 		memcpy(msr.pData, &consts, sizeof(consts));
-		//  Reenable GPU access to the vertex buffer data.
 		GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
-	ConstantBuffer(Graphics& gfx, const C& consts)
+	ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0u)
+		:
+		slot(slot)
 	{
 		INFOMAN(gfx);
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbd.Usage = D3D11_USAGE_DYNAMIC;//This usage flag causes the runtime to optimize for frequent map operations. D3D11_USAGE_DYNAMIC is only useful when the buffer is mapped frequently; if data is to remain constant, place that data in a static vertex or index buffer.
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
 		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = sizeof(consts);
@@ -41,7 +37,9 @@ public:
 		csd.pSysMem = &consts;
 		GFX_THROW_INFO(GetDevice(gfx)->CreateBuffer(&cbd, &csd, &pConstantBuffer));
 	}
-	ConstantBuffer(Graphics& gfx)
+	ConstantBuffer(Graphics& gfx, UINT slot = 0u)
+		:
+		slot(slot)
 	{
 		INFOMAN(gfx);
 
@@ -56,18 +54,20 @@ public:
 	}
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
+	UINT slot;
 };
 
 template<typename C>
 class VertexConstantBuffer : public ConstantBuffer<C>
 {
 	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
 	using Bindable::GetContext;
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+		GetContext(gfx)->VSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
 
@@ -75,11 +75,12 @@ template<typename C>
 class PixelConstantBuffer : public ConstantBuffer<C>
 {
 	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
 	using Bindable::GetContext;
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->PSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
+		GetContext(gfx)->PSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 	}
-};
+}; 
