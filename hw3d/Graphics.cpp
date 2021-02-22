@@ -8,7 +8,7 @@
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
 
-namespace wrl = Microsoft::WRL;
+namespace wrl = Microsoft::WRL;//Windows Runtime c++ template Library
 namespace dx = DirectX;
 
 #pragma comment(lib,"d3d11.lib")
@@ -19,6 +19,7 @@ namespace dx = DirectX;
 Graphics::Graphics(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
+	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferDesc.Width = 0;
 	sd.BufferDesc.Height = 0;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;

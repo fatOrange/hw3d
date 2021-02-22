@@ -44,7 +44,7 @@ App::App()
 	};
 
 	drawables.reserve(nDrawables);
-	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
+	std::generate_n(std::back_inserter(drawables), nDrawables, Factory( wnd.Gfx() ));
 
 	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
