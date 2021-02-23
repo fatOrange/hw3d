@@ -76,7 +76,7 @@ Box::Box(Graphics& gfx,
 	// model deformation transform (per instance, not stored as bind)
 	dx::XMStoreFloat3x3(
 		&mt,
-		dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng))
+		dx::XMMatrixScaling(1.0f, 1.0f, 1.0f)
 	);
 }
 

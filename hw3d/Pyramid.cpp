@@ -36,7 +36,7 @@ Pyramid::Pyramid(Graphics& gfx,
 				unsigned char a;
 			} color;
 		};
-		auto model = Cone::MakeTesselated<Vertex>(4);
+		auto model = Cone::MakeTesselated<Vertex>(7);
 		// set vertex colors for mesh 为什么要6个点 因为
 		model.vertices[0].color = { 255,255,0 };
 		model.vertices[1].color = { 255,255,0 };
